@@ -1,0 +1,1 @@
+document.getElementById("name").textContent="A random set of words.";

@@ -1,0 +1,258 @@
+<!doctype html>
+
+<html lang="en">
+<link rel="icon" type="image/png" href="Images/favicon.png" sizes="128x128">
+
+<!--#########################################################################-->
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>Enigma Machine</title>
+  <script src="jquery-3.2.0.min.js"></script>
+  <script src="scripts.js"></script>
+</head>
+
+<body>
+
+<div style="text-align:center;color:#fff;">The Enigma Machine</div>
+<div style="text-align:center;color:#fff;font-size:10px;">Version 1.1 by Justin E. Oxford</div>
+<div style="
+    text-align:justify;
+    margin: 0 auto 0 auto;
+    width: 950px;
+    color:#fff;
+    font-size:9px;">
+    <br>Welcome to the Enigma Machine[WIP]! This machine was famously used by Germany in WWII, and was cracked by the Allies with the help 
+    of Alan Turing. The military version of this Machine had some 3*(10^114) possible configurations. This machine currently 
+    offers 26^3 (or around 17,000). This version does not feature the plugboard nor interchangeable rotors. Both features are on the to-do list. The 
+    current rotors are artificial, but will be changed to real-world rotor configurations in later versions. The current 
+    rotors are ported from a Python project with a similar scope. That project is available for download <a href='/Downloads/downloads.html' target="_blank" style="color:#fff;">Here</a>.<br>
+    Right now, the user is able to encrypt messages in a similar fashion to commercial consumers of the Enigma Machine. The 
+    German military used the plugboard for additional security. Give it a go!
+    <br>DISCLAIMER: I, Justin Oxford, am not responsible for the release, loss, or mishandling of any of your personal data. Do not 
+    use this machine for serious encryption purposes! Use at your own risk.<br>
+    <br>Project Started: 17 June 2019
+    <br>Last Updated:    18 June 2019, 9:30am EDT
+</div>
+
+<div id="wheelsetting">
+    <div class="wheeldisplay"> 
+        <div class="wheelup" id="wheel_1_up" onclick="wheel_turn_up(0,0)"></div>
+        <p id="wheel_1">0</p>
+        <div class="wheeldn" id="wheel_1_dn" onclick="wheel_turn_dn(0)"></div>
+    </div>
+
+    <div class="wheeldisplay"> 
+        <div class="wheelup" id="wheel_2_up" onclick="wheel_turn_up(1,0)"></div>
+        <p id="wheel_2">0</p>
+        <div class="wheeldn" id="wheel_2_dn" onclick="wheel_turn_dn(1)"></div>
+    </div>
+
+    <div class="wheeldisplay"> 
+        <div class="wheelup" id="wheel_3_up" onclick="wheel_turn_up(2,0)"></div>
+        <p id="wheel_3">0</p>
+        <div class="wheeldn" id="wheel_3_dn" onclick="wheel_turn_dn(2)"></div>
+    </div>
+
+</div>
+
+<div id="lightboard">
+    <div id="QWERTY_row_1" class="lightrow">
+        <div id="113" class="lightbutton">Q</div>
+        <div id="119" class="lightbutton">W</div>
+        <div id="101" class="lightbutton">E</div>
+        <div id="114" class="lightbutton">R</div>
+        <div id="116" class="lightbutton">T</div>
+        <div id="121" class="lightbutton">Y</div>
+        <div id="117" class="lightbutton">U</div>
+        <div id="105" class="lightbutton">I</div>
+        <div id="111" class="lightbutton">O</div>
+        <div id="112" class="lightbutton">P</div>
+    </div>
+
+    <div id="QWERTY_row_2" class="lightrow">
+        <div id="97" class="lightbutton">A</div>
+        <div id="115" class="lightbutton">S</div>
+        <div id="100" class="lightbutton">D</div>
+        <div id="102" class="lightbutton">F</div>
+        <div id="103" class="lightbutton">G</div>
+        <div id="104" class="lightbutton">H</div>
+        <div id="106" class="lightbutton">J</div>
+        <div id="107" class="lightbutton">K</div>
+        <div id="108" class="lightbutton">L</div>
+    </div>
+
+    <div id="QWERTY_row_3" class="lightrow">
+        <div id="122" class="lightbutton">Z</div>
+        <div id="120" class="lightbutton">X</div>
+        <div id="99" class="lightbutton">C</div>
+        <div id="118" class="lightbutton">V</div>
+        <div id="98" class="lightbutton">B</div>
+        <div id="110" class="lightbutton">N</div>
+        <div id="109" class="lightbutton">M</div>
+    </div>
+</div>
+
+<div id='message_display' style="color:yellow;">
+    MESSAGE WILL OUTPUT HERE
+</div>
+
+
+<div id="plugboard">
+
+</div>
+
+
+
+<script>
+
+    // Declaring Base variables
+    var wheel_1_setting = 1 % 26;
+    var wheel_2_setting = 1 % 26;
+    var wheel_3_setting = 1 % 26;
+    var wheel_1_INIT    = 1 % 26;
+    var wheel_2_INIT    = 1 % 26;
+    var wheel_3_INIT    = 1 % 26;
+    var wheel_settings  = [ 0 , 0 , 0 ];
+    var rotations       = 0;
+    var message         = [];
+    var display_message = true;
+    var key             = 0;
+
+    // Create the Wheels
+    var wheel_a = [15, 6, 19, 7, 22, 13, 9, 16, 3, 8, 0, 14, 10, 17, 4, 24, 18, 12, 5, 21, 25, 23, 20, 11, 2, 1];
+    var wheel_b = [11, 22, 16, 1, 9, 13, 23, 24, 20, 17, 6, 25, 0, 3, 14, 18, 15, 8, 5, 4, 7, 21, 19, 12, 2, 10];
+    // DO NOT TOUCH THE VALUES BELOW, IF YOU DO, CHANGES MUST BE MADE IN PAIRS!!!
+    var wheel_c = [18, 19, 21, 13, 8, 11, 12, 23, 24, 3, 5, 7, 20, 6, 4, 1, 22, 15, 16, 10, 14, 2, 17, 9, 25, 0];
+    var scrambl = [17, 12, 24, 19, 21, 15, 25, 8, 7, 23, 16, 14, 1, 18, 11, 5, 10, 0, 13, 3, 22, 4, 20, 9, 2, 6];
+    // THESE VALUES MUST REMAIN IDENTICAL TO THE DESIRED INITIAL SETTING (0,0,0)
+    var wheel_a_reset = [15, 6, 19, 7, 22, 13, 9, 16, 3, 8, 0, 14, 10, 17, 4, 24, 18, 12, 5, 21, 25, 23, 20, 11, 2, 1];
+    var wheel_b_reset = [11, 22, 16, 1, 9, 13, 23, 24, 20, 17, 6, 25, 0, 3, 14, 18, 15, 8, 5, 4, 7, 21, 19, 12, 2, 10];
+    var wheel_c_reset = [18, 19, 21, 13, 8, 11, 12, 23, 24, 3, 5, 7, 20, 6, 4, 1, 22, 15, 16, 10, 14, 2, 17, 9, 25, 0];
+    var scrambl_reset = [17, 12, 24, 19, 21, 15, 25, 8, 7, 23, 16, 14, 1, 18, 11, 5, 10, 0, 13, 3, 22, 4, 20, 9, 2, 6];
+
+
+    //array containing the wheels in use
+    var wheels_in_use = [wheel_c, wheel_b, wheel_a, scrambl]
+
+    // initialize wheels
+    document.getElementById("wheel_1").innerHTML = wheel_settings[0];
+    document.getElementById("wheel_2").innerHTML = wheel_settings[1];
+    document.getElementById("wheel_3").innerHTML = wheel_settings[2];
+
+
+    //this function turns the wheel to a higher number and resets the values displayed
+    function wheel_turn_up(x,y){
+        //moves wheel setting
+        wheel_settings[x] = ((wheel_settings[x] + 1) % 26);
+        
+        //updates display
+        document.getElementById("wheel_1").innerHTML = wheel_settings[0];
+        document.getElementById("wheel_2").innerHTML = wheel_settings[1];
+        document.getElementById("wheel_3").innerHTML = wheel_settings[2];
+        
+        //rotates wheel array by one in the left direction
+        var first_letter = wheels_in_use[x].shift();
+        wheels_in_use[x].push(first_letter); 
+        
+        //resets rotations and message only if user changes settings
+        if (y !== 1) {
+            //reset rotations
+            rotations = 0;
+            //reset message
+            message = []
+            document.getElementById("message_display").innerHTML = '***Settings Changed ; Message Erased***'
+        }
+    }
+    //this function turns the wheel to a lower number and resets the values displayed
+    function wheel_turn_dn(x){
+        if (wheel_settings[x] == 0) { //stops negative values, can't press down below 0
+            return;
+        }
+        else {
+            //moves wheel setting
+            wheel_settings[x] = ((wheel_settings[x] - 1) % 26);
+            
+            //updates display
+            document.getElementById("wheel_1").innerHTML = wheel_settings[0];
+            document.getElementById("wheel_2").innerHTML = wheel_settings[1];
+            document.getElementById("wheel_3").innerHTML = wheel_settings[2];
+            
+            //rotates wheel array by one in the right direction
+            var first_letter = wheels_in_use[x].pop();
+            wheels_in_use[x].unshift(first_letter); 
+            
+            //resets rotations
+            rotations = 0;
+
+            //reset message
+            message = []
+            document.getElementById("message_display").innerHTML = '***Rotors Reset; Message Cleared***'
+        }
+    }
+
+
+    //this function runs the circuit and produces the encrypted value and lights up the corresponding letter
+    function keyboard_input(){
+        key = event.which;
+        if (key >= 97 && key <= 122) {
+            var slot_selection = key - 97;
+            var letter = key.toString();
+            var a = wheel_a[slot_selection];
+            var b = wheel_b[a];
+            var c = wheel_c[b];
+            var d = scrambl.indexOf(c);
+            var e = wheel_c.indexOf(d);
+            var f = wheel_b.indexOf(e);
+            var g = wheel_a.indexOf(f);
+            var lightUp = g + 97; 
+            document.getElementById(lightUp).style.backgroundColor = "palegoldenrod";
+            message_output(lightUp);
+        }
+    }
+
+
+    //this function resets the lights, and clicks the rotors accordly
+    function key_off() {
+        if (key >= 97 && key <= 122) {
+            var elements = document.getElementsByClassName('lightbutton');
+            for(var i=0; i<elements.length; i++) { 
+                elements[i].style.backgroundColor='#808080';
+            }
+            
+            wheel_turn_up(2,1);
+            rotations = rotations + 1;
+
+            if ((rotations % 26) == 0) {
+                wheel_turn_up(1,1);
+            }
+            if ((rotations % (26*26)) == 0) {
+                wheel_turn_up(0,1);
+            }
+            key = 0;
+        }
+    }
+    
+
+    function message_output(key) {
+         if (display_message == true){
+             var character = String.fromCharCode(key);
+             message.push(character);
+             var output = message.join('');
+             document.getElementById("message_display").innerHTML = output;
+         }
+         else if (display_message == false) {
+             document.getElementById("message_display").innerHTML = 'Message Hidden';
+         }
+    }
+
+
+    //these listeners wait patiently for a user to touch their keyboard
+    document.addEventListener("keypress", keyboard_input);
+    document.addEventListener("keyup", key_off)
+
+</script>
+
+
+</body>

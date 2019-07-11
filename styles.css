@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap');
+
+body {
+    font-family: 'Roboto Mono', monospace;
+    background-color: #363636;
+    overflow: hidden;
+    cursor: default;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-touch-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+#wheelsetting {
+    color: #fff;
+    height: auto;
+    width: auto;
+    padding: 0 auto 0 auto;
+    text-align: center;
+    margin: 25px auto 25px auto;
+}
+
+.wheeldisplay {
+    width: 50px;
+    height: 50px;
+    background-color: #898989;
+    border: 1px solid #252525;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 16px;
+    display: inline-block
+}
+
+.wheelup {
+    margin: -16px 0 0 20px;
+    background-color: green;
+    width: 10px;
+    height: 10px;
+}
+
+.wheeldn {
+    margin: 0 0 0 20px;
+    background-color: red;
+    width: 10px;
+    height: 10px;
+}
+
+#lightboard {
+    background-color: #606060;
+    text-align: center;
+    margin: 25px auto 15px auto;
+    border: 2px solid #252525;
+    border-radius: 5px;
+    padding: 25px 20px 25px 20px;
+    width: 900px;
+}
+
+.lightrow {
+    margin: 0 auto;
+}
+
+.lightbutton {
+    text-align: center;
+    font-size: 25px;
+    color: #000;
+    background-color: #808080;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    margin: 5px 15px 5px 15px;
+    display: inline-block;
+    line-height: 50px;
+}
+
+#message_display {
+    width: 350px;
+    height: 40px;
+    overflow: auto;
+    background-color: #505050;
+    border: 1px solid black;
+    margin: 0 auto;
+    font-size: 14px;
+    padding: 5px 5px 5px 5px;
+}
+
+#plugboard {
+
+}
