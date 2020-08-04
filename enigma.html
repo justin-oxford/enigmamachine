@@ -9,8 +9,6 @@
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="styles.css">
   <title>Enigma Machine</title>
-  <script src="jquery-3.2.0.min.js"></script>
-  <script src="scripts.js"></script>
 </head>
 
 <body>
@@ -98,6 +96,14 @@
 
 
 <script>
+    // ##############
+    // ENIGMA MACHINE
+    // ##############
+
+    // Justin E. Oxford
+
+    // An enigma machine emulator using javascript.
+    // the wheel values are true to life for the inital wheels for the first enigma machine
 
     // Declaring Base variables
     var wheel_1_setting = 1 % 26;
@@ -199,18 +205,18 @@
             var input = input_disp.join('');
             document.getElementById("input_display").innerHTML = input;
             // run enigma encode
-            var slot_selection = key - 97;
-            var letter = key.toString();
-            var a = wheel_a[slot_selection];
-            var b = wheel_b[a];
-            var c = wheel_c[b];
-            var d = scrambl.indexOf(c);
-            var e = wheel_c.indexOf(d);
-            var f = wheel_b.indexOf(e);
-            var g = wheel_a.indexOf(f);
-            var lightUp = g + 97; 
-            document.getElementById(lightUp).style.backgroundColor = "palegoldenrod";
-            message_output(lightUp);
+            var slot_selection = key - 97;    // assign slot
+            var letter = key.toString();      // 
+            var a = wheel_a[slot_selection];  // go to index [0-25] in first rotor (a)
+            var b = wheel_b[a];               // feed this value into rotor-b
+            var c = wheel_c[b];               // feed this value into rotor c
+            var d = scrambl.indexOf(c);       // reverse the order through the 'plugboard' at the end
+            var e = wheel_c.indexOf(d);       // feed back up through c
+            var f = wheel_b.indexOf(e);       // feed back up through b
+            var g = wheel_a.indexOf(f);       // feed back up to a -- this is the encrypted value
+            var lightUp = g + 97;             // get the key-code for the number we want to lightup
+            document.getElementById(lightUp).style.backgroundColor = "palegoldenrod"; // light it
+            message_output(lightUp);          // send to the encrypt letter to output
         }
     }
 
@@ -223,12 +229,14 @@
                 elements[i].style.backgroundColor='#999';
             }
             
+            // rotate wheel a by one with each press
             wheel_turn_up(2,1);
             rotations = rotations + 1;
-
+            // rotate wheel b with very rotation of a (1 in 26 key inputs)
             if ((rotations % 26) == 0) {
                 wheel_turn_up(1,1);
             }
+            // rotate wheel c with very rotation of b (1 in 26*26 key inputs)
             if ((rotations % (26*26)) == 0) {
                 wheel_turn_up(0,1);
             }
@@ -239,11 +247,13 @@
 
     function message_output(key) {
          if (display_message == true){
-             var character = String.fromCharCode(key);
+            // get the charcode for the output key and add it to the message string
+            var character = String.fromCharCode(key);
              message.push(character);
              var output = message.join('');
              document.getElementById("message_display").innerHTML = output;
          }
+         // this code does not run, but allows expansion for the program
          else if (display_message == false) {
              document.getElementById("message_display").innerHTML = 'Message Hidden';
          }
