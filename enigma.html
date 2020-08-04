@@ -15,47 +15,33 @@
 
 <body>
 
-<div style="text-align:center;color:#fff;">The Enigma Machine</div>
-<div style="text-align:center;color:#fff;font-size:10px;">Version 1.1 by Justin E. Oxford</div>
-<div style="
-    text-align:justify;
-    margin: 0 auto 0 auto;
-    width: 950px;
-    color:#fff;
-    font-size:9px;">
-    <br>Welcome to the Enigma Machine[WIP]! This machine was famously used by Germany in WWII, and was cracked by the Allies with the help 
-    of Alan Turing. The military version of this Machine had some 3*(10^114) possible configurations. This machine currently 
-    offers 26^3 (or around 17,000). This version does not feature the plugboard nor interchangeable rotors. Both features are on the to-do list. The 
-    current rotors are artificial, but will be changed to real-world rotor configurations in later versions. The current 
-    rotors are ported from a Python project with a similar scope. That project is available for download <a href='/Downloads/downloads.html' target="_blank" style="color:#fff;">Here</a>.<br>
-    Right now, the user is able to encrypt messages in a similar fashion to commercial consumers of the Enigma Machine. The 
-    German military used the plugboard for additional security. Give it a go!
-    <br>DISCLAIMER: I, Justin Oxford, am not responsible for the release, loss, or mishandling of any of your personal data. Do not 
-    use this machine for serious encryption purposes! Use at your own risk.<br>
-    <br>Project Started: 17 June 2019
-    <br>Last Updated:    18 June 2019, 9:30am EDT
-</div>
+<div class='app-title'>The Enigma Machine</div>
 
-<div id="wheelsetting">
+<div class='instruction'>Select the initial wheel position.</div>
+
+<div class="wheelsetting">
+    <span></span>
     <div class="wheeldisplay"> 
-        <div class="wheelup" id="wheel_1_up" onclick="wheel_turn_up(0,0)"></div>
-        <p id="wheel_1">0</p>
-        <div class="wheeldn" id="wheel_1_dn" onclick="wheel_turn_dn(0)"></div>
+        <div class="wheelmove up" id="wheel_1_up" onclick="wheel_turn_up(0,0)"><div>+</div></div>
+        <div id="wheel_1">0</div>
+        <div class="wheelmove dn" id="wheel_1_dn" onclick="wheel_turn_dn(0)"><div>-</div></div>
     </div>
 
     <div class="wheeldisplay"> 
-        <div class="wheelup" id="wheel_2_up" onclick="wheel_turn_up(1,0)"></div>
-        <p id="wheel_2">0</p>
-        <div class="wheeldn" id="wheel_2_dn" onclick="wheel_turn_dn(1)"></div>
+        <div class="wheelmove up" id="wheel_2_up" onclick="wheel_turn_up(1,0)"><div>+</div></div>
+        <div id="wheel_2">0</div>
+        <div class="wheelmove dn" id="wheel_2_dn" onclick="wheel_turn_dn(1)"><div>-</div></div>
     </div>
 
     <div class="wheeldisplay"> 
-        <div class="wheelup" id="wheel_3_up" onclick="wheel_turn_up(2,0)"></div>
-        <p id="wheel_3">0</p>
-        <div class="wheeldn" id="wheel_3_dn" onclick="wheel_turn_dn(2)"></div>
+        <div class="wheelmove up" id="wheel_3_up" onclick="wheel_turn_up(2,0)"><div>+</div></div>
+        <div id="wheel_3">0</div>
+        <div class="wheelmove dn" id="wheel_3_dn" onclick="wheel_turn_dn(2)"><div>-</div></div>
     </div>
 
 </div>
+
+<div class='instruction'>Type using your keyboard in lowercase to encode/decode.</div>
 
 <div id="lightboard">
     <div id="QWERTY_row_1" class="lightrow">
@@ -94,8 +80,14 @@
     </div>
 </div>
 
-<div id='message_display' style="color:yellow;">
-    MESSAGE WILL OUTPUT HERE
+<div class='message_display_title'>Your Input</div>
+<div id='input_display' class='message_display'>
+    Begin typing...
+</div>
+
+<div class='message_display_title'>Encrypted Message</div>
+<div id='message_display' class='message_display'>
+    Awaiting input...
 </div>
 
 
@@ -116,6 +108,7 @@
     var wheel_3_INIT    = 1 % 26;
     var wheel_settings  = [ 0 , 0 , 0 ];
     var rotations       = 0;
+    var input_disp      = [];
     var message         = [];
     var display_message = true;
     var key             = 0;
@@ -161,8 +154,10 @@
             //reset rotations
             rotations = 0;
             //reset message
-            message = []
-            document.getElementById("message_display").innerHTML = '***Settings Changed ; Message Erased***'
+            input_disp = [];
+            message = [];
+            document.getElementById("input_display").innerHTML = '**Settings Changed -- Message Erased**';
+            document.getElementById("message_display").innerHTML = '**Settings Changed -- Message Erased**';
         }
     }
     //this function turns the wheel to a lower number and resets the values displayed
@@ -187,8 +182,10 @@
             rotations = 0;
 
             //reset message
-            message = []
-            document.getElementById("message_display").innerHTML = '***Rotors Reset; Message Cleared***'
+            input_disp = [];
+            message = [];
+            document.getElementById("input_display").innerHTML = '**Settings Changed -- Message Erased**';
+            document.getElementById("message_display").innerHTML = '**Settings Changed -- Message Erased**';
         }
     }
 
@@ -197,6 +194,11 @@
     function keyboard_input(){
         key = event.which;
         if (key >= 97 && key <= 122) {
+            // show the raw input key
+            input_disp.push(String.fromCharCode(key));
+            var input = input_disp.join('');
+            document.getElementById("input_display").innerHTML = input;
+            // run enigma encode
             var slot_selection = key - 97;
             var letter = key.toString();
             var a = wheel_a[slot_selection];
@@ -218,7 +220,7 @@
         if (key >= 97 && key <= 122) {
             var elements = document.getElementsByClassName('lightbutton');
             for(var i=0; i<elements.length; i++) { 
-                elements[i].style.backgroundColor='#808080';
+                elements[i].style.backgroundColor='#999';
             }
             
             wheel_turn_up(2,1);
